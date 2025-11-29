@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Ride-Sharing System | Student Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --primary-light: #4895ef;
+            --secondary: #7209b7;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --white: #ffffff;
+            --gray: #e9ecef;
+            --dark-gray: #adb5bd;
+            --text: #212529;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #e63946;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --hover-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .pay-small {
+    display: inline-block;
+    width: auto;
+    padding: 6px 12px !important;
+    font-size: 0.85rem !important;
+    border-radius: 6px !important;
+}
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .student-name {
+            font-weight: 600;
+            color: var(--white);
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .logout-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            color: var(--white);
+            backdrop-filter: blur(10px);
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .dashboard {
+            padding: 30px 0;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Card Styles */
+        .card {
+            background-color: var(--white);
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: var(--accent);
+        }
+
+        /* Booking Form */
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--gray);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background-color: var(--light);
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        .counter {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .counter-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            background-color: var(--white);
+            color: var(--primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .counter-btn:hover {
+            background-color: var(--primary);
+            color: var(--white);
+            transform: scale(1.1);
+        }
+
+        .counter-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            min-width: 40px;
+            text-align: center;
+            color: var(--primary);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: var(--white);
+            border: none;
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .submit-btn:hover::after {
+            left: 100%;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(67, 97, 238, 0.4);
+        }
+
+        /* Ride Cards */
+        .rides-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .ride-card {
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .ride-card:hover {
+            transform: translateX(5px) translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .ride-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .student-name {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .ride-time {
+            color: var(--secondary);
+            font-size: 0.9rem;
+            background-color: rgba(114, 9, 183, 0.1);
+            padding: 3px 8px;
+            border-radius: 20px;
+        }
+
+        .ride-details {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .location {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--secondary);
+            font-size: 0.9rem;
+        }
+
+        .passengers {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--secondary);
+            font-size: 0.9rem;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status.confirmed, .status.accepted {
+            background-color: rgba(76, 201, 240, 0.15);
+            color: var(--success);
+        }
+
+        .status.pending {
+            background-color: rgba(248, 150, 30, 0.15);
+            color: var(--warning);
+        }
+
+        .status.completed {
+            background-color: rgba(173, 181, 189, 0.15);
+            color: var(--dark-gray);
+        }
+
+        /* My Bookings */
+        .booking-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--gray);
+            transition: var(--transition);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .booking-item:hover {
+            background-color: var(--light);
+            transform: translateX(5px);
+        }
+
+        .booking-item:last-child {
+            border-bottom: none;
+        }
+
+        .booking-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .booking-locations {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: var(--text);
+        }
+
+        .booking-time {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .paid-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    background: #22c55e;
+    color: white;
+    font-weight: 600;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+        /* Footer */
+        footer {
+            background-color: var(--white);
+            padding: 20px 0;
+            text-align: center;
+            color: var(--secondary);
+            margin-top: 30px;
+            border-top: 1px solid var(--gray);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        /* Empty States */
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: var(--dark-gray);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--gray);
+        }
+        .pay-small {
+    width: auto !important;
+    display: inline-block !important;
+    padding: 6px 12px !important;
+    font-size: 0.85rem !important;
+    border-radius: 6px !important;
+    box-shadow: none !important; 
+}
+
+
+        /* Discount Badge */
+        .discount-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ffd166 0%, #ff9e00 100%);
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .card {
+                padding: 20px;
+            }
+            
+            .rides-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .booking-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header/Navbar -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <i class="fas fa-bus"></i>
+                    <span>SmartRide</span>
+                </div>
+                <div class="user-info">
+                    <span class="student-name">{{ name.split('@')[0]|capitalize }}</span>
+                    <button class="logout-btn" onclick="window.location.href='/logout'">Logout</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <div class="dashboard">
+            <!-- Left Column -->
+            <div class="left-column">
+                <!-- Ride Booking Form -->
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Book a Ride
+                    </h2>
+                    <form id="ride-form">
+                        <div class="form-group">
+                            <label for="pickup">Pickup Location</label>
+                            <input type="text" id="pickup" placeholder="Enter your pickup location" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="destination">Destination</label>
+                            <input type="text" id="destination" placeholder="Enter your destination" required>
+                        </div>
+               <div class="form-group">
+    <label>Pickup Time</label>
+
+    <div class="time-row">
+        <div class="time-block">
+            <span class="time-label">Hour</span>
+            <select id="hour" required>
+                <option value="" disabled selected>--</option>
+                <option>01</option>
+                <option>02</option>
+                <option>03</option>
+                <option>04</option>
+                <option>05</option>
+                <option>06</option>
+                <option>07</option>
+                <option>08</option>
+                <option>09</option>
+                <option>10</option>
+                <option>11</option>
+                <option>12</option>
+            </select>
+        </div>
+
+        <div class="time-block">
+            <span class="time-label">Min</span>
+            <select id="minute" required>
+                <option value="" disabled selected>--</option>
+                <option>00</option>
+                <option>15</option>
+                <option>30</option>
+                <option>45</option>
+            </select>
+        </div>
+
+        <div class="time-block">
+            <span class="time-label">AM/PM</span>
+            <select id="ampm" required>
+                <option value="" disabled selected>--</option>
+                <option>AM</option>
+                <option>PM</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+                        <div class="form-group">
+                            <label>Number of Students</label>
+                            <div class="counter">
+                                <button type="button" class="counter-btn" id="decrease">-</button>
+                                <span class="counter-value" id="student-count">1</span>
+                                <button type="button" class="counter-btn" id="increase">+</button>
+                            </div>
+                        </div>
+                        <button type="submit" class="submit-btn">Book Ride</button>
+                    </form>
+                </div>
+
+                <!-- My Bookings (Pending / Accepted) -->
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-calendar-check"></i>
+                        My Bookings
+                    </h2>
+                    <div id="my-bookings">
+                        {% if bookings %}
+                            {% for b in bookings %}
+                            <div class="booking-item" data-booking-id="{{ b.id }}">
+                                <div class="booking-info">
+                                    <div class="booking-locations">
+                                        <span>{{ b.pickup }}</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                        <span>{{ b.destination }}</span>
+                                    </div>
+                                    <div class="booking-time">{{ b.pickup_time }}</div>
+                                </div>
+                                <span class="status {{ b.status|lower }}">{{ b.status|capitalize }}</span>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="empty-state">
+                                <i class="fas fa-calendar-times"></i>
+                                <p>No bookings yet.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="right-column">
+                <!-- Upcoming Rides -->
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-route"></i>
+                        Upcoming Rides
+                    </h2>
+                    <div class="rides-container" id="upcoming-rides">
+                        <div class="empty-state">
+                            <i class="fas fa-road"></i>
+                            <p>No upcoming rides yet.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ride Updates -->
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-bell"></i>
+                        Ride Updates
+                    </h2>
+            <div id="ride-updates">
+    {% set has_update = false %}
+
+    {% for b in bookings %}
+        {% if b.status == 'accepted' %}
+            {% set has_update = true %}
+            <div class="booking-item">
+                <div class="booking-info">
+                    <div class="booking-locations">
+                        <span>🎉 Your ride to {{ b.destination }} has been accepted!</span>
+                    </div>
+                </div>
+
+{% if b.payment_status == 'pending' %}
+    <a href="/payment" class="submit-btn pay-small">
+        Pay Now
+    </a>
+{% else %}
+    <span class="paid-badge">
+        ✔ Paid
+    </span>
+{% endif %}
+
+
+
+
+            </div>
+        {% endif %}
+    {% endfor %}
+
+    {% if not has_update %}
+        <div class="empty-state">
+            <i class="fas fa-bell-slash"></i>
+            <p>No recent updates.</p>
+        </div>
+    {% endif %}
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Smart Ride-Sharing System. All rights reserved.</p>
+        </div>
+    </footer>
+
+   <script>
+    // ---------- DOM Elements ----------
+    const rideForm = document.getElementById('ride-form');
+    const upcomingRidesContainer = document.getElementById('upcoming-rides');
+    const rideUpdatesContainer = document.getElementById('ride-updates');
+    const decreaseBtn = document.getElementById('decrease');
+    const increaseBtn = document.getElementById('increase');
+    const studentCountElem = document.getElementById('student-count');
+
+    let studentCount = 1;
+
+    // ---------- Passenger Counter ----------
+    decreaseBtn.addEventListener('click', () => {
+        if (studentCount > 1) studentCount--;
+        studentCountElem.textContent = studentCount;
+    });
+
+    increaseBtn.addEventListener('click', () => {
+        studentCount++;
+        studentCountElem.textContent = studentCount;
+    });
+
+    // ---------- Ride Booking ----------
+    rideForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const pickup = document.getElementById('pickup').value.trim();
+        const destination = document.getElementById('destination').value.trim();
+
+        // NEW — Get time fields
+        const hour = document.getElementById('hour').value;
+        const minute = document.getElementById('minute').value;
+        const ampm = document.getElementById('ampm').value;
+
+        // Validation
+        if (!pickup || !destination || !hour || !minute || !ampm) {
+            alert("Please fill all fields!");
+            return;
+        }
+
+        // Convert to 24-hour format
+        let formattedHour = parseInt(hour);
+        if (ampm === "PM" && formattedHour !== 12) formattedHour += 12;
+        if (ampm === "AM" && formattedHour === 12) formattedHour = 0;
+
+        const pickup_time = `${String(formattedHour).padStart(2,'0')}:${minute}`;
+
+        // Minimum student count check
+        if (studentCount < 10) {
+            alert("❌ Minimum 10 students are required to book the bus!");
+            return;
+        }
+
+        // ---------- SEND REQUEST ----------
+        try {
+            const res = await fetch('/book_ride', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    pickup,
+                    destination,
+                    pickup_time,
+                    num_passengers: studentCount
+                })
+            });
+
+            const data = await res.json();
+
+            if (data.status === "success") {
+                let discountMsg = "";
+                if (data.discount > 0) {
+                    discountMsg = "🎉 Congrats! You've unlocked a 35% OFF ride!";
+                    addRideUpdate("You've unlocked a 35% discount on this ride!");
+                } else {
+                    discountMsg = "✅ Ride request sent to drivers!";
+                    addRideUpdate("Ride request sent successfully!");
+                }
+                alert(discountMsg);
+
+                // Add to upcoming rides
+                addUpcomingRide({
+                    pickup: data.ride.pickup,
+                    destination: data.ride.destination,
+                    pickup_time: data.ride.pickup_time,
+                    num_passengers: data.ride.num_passengers
+                }, data.discount > 0);
+
+            } else {
+                alert(data.message || "Something went wrong!");
+            }
+
+        } catch (err) {
+            console.error("Error booking ride:", err);
+            alert("Server error. Please try again.");
+        }
+    });
+
+    // ---------- Functions ----------
+    function addUpcomingRide(ride, isDiscounted = false) {
+        if (upcomingRidesContainer.querySelector('.empty-state')) {
+            upcomingRidesContainer.innerHTML = '';
+        }
+
+        const rideCard = document.createElement('div');
+        rideCard.className = 'ride-card';
+        if (isDiscounted) {
+            rideCard.style.borderLeft = '4px solid gold';
+            rideCard.style.boxShadow = '0 4px 15px rgba(255, 215, 0, 0.3)';
+        }
+
+        rideCard.innerHTML = `
+            <div class="ride-header">
+                <span class="student-name">You</span>
+                <span class="ride-time">${ride.pickup_time}</span>
+            </div>
+            <div class="ride-details">
+                <div class="location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>${ride.pickup}</span>
+                </div>
+                <i class="fas fa-arrow-right"></i>
+                <div class="location">
+                    <i class="fas fa-flag-checkered"></i>
+                    <span>${ride.destination}</span>
+                </div>
+            </div>
+            <div class="passengers">
+                <i class="fas fa-users"></i>
+                <span>${ride.num_passengers} passengers</span>
+            </div>
+            ${isDiscounted ? '<div class="discount-badge">🎉 35% OFF</div>' : ''}
+        `;
+        upcomingRidesContainer.prepend(rideCard);
+    }
+
+    function addRideUpdate(message) {
+        if (rideUpdatesContainer.querySelector('.empty-state')) {
+            rideUpdatesContainer.innerHTML = '';
+        }
+
+        const updateItem = document.createElement('div');
+        updateItem.className = 'booking-item';
+        const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        
+        updateItem.innerHTML = `
+            <div class="booking-info">
+                <div class="booking-locations">
+                    <span>${message}</span>
+                </div>
+                <div class="booking-time">${timestamp}</div>
+            </div>
+        `;
+        rideUpdatesContainer.prepend(updateItem);
+    }
+</script>
+
+</body>
+</html>

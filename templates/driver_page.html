@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Dashboard - Smart Ride-Sharing System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #6c757d;
+            --accent: #7209b7;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4bb543;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            --hover-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        .driver-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .driver-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--dark);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        .driver-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .logout-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .dashboard {
+            padding: 30px 0;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            transition: var(--transition);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .panel:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .panel-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .panel-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel-title i {
+            font-size: 1.1rem;
+        }
+
+        .notification-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .notification-container:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(15deg);
+        }
+
+        .badge {
+            background-color: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            font-weight: 600;
+            animation: pulse 1.5s infinite;
+        }
+
+        .panel-content {
+            padding: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        /* Scrollbar Styling */
+        .panel-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .panel-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .panel-content::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .panel-content::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Ride Cards */
+        .ride-card {
+            border: 1px solid #eaeaea;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: var(--transition);
+            background: white;
+            animation: slideInRight 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ride-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--accent));
+        }
+
+        .ride-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.1);
+            transform: translateX(5px);
+        }
+
+        .ride-card-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .ride-time {
+            color: var(--secondary);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .ride-students {
+            background: linear-gradient(135deg, var(--accent) 0%, #9d4edd 100%);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            box-shadow: 0 3px 6px rgba(114, 9, 183, 0.2);
+        }
+
+        .ride-locations {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .location {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .location-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .pickup-icon {
+            background: linear-gradient(135deg, #4bb543 0%, #3a9a32 100%);
+            color: white;
+            box-shadow: 0 3px 6px rgba(75, 181, 67, 0.3);
+        }
+
+        .dropoff-icon {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 3px 6px rgba(67, 97, 238, 0.3);
+        }
+
+        .location-text {
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .ride-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4bb543 0%, #3a9a32 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(75, 181, 67, 0.3);
+        }
+
+        /* Active Rides */
+        .active-ride {
+            background-color: #f0fff4;
+            border-left: 4px solid var(--success);
+        }
+
+        .completed-ride {
+            background-color: #f8f9fa;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .ride-status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .status-active {
+            background: linear-gradient(135deg, #4bb543 0%, #3a9a32 100%);
+            color: white;
+        }
+
+        .status-completed {
+            background: linear-gradient(135deg, var(--secondary) 0%, #5a6268 100%);
+            color: white;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--secondary);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            color: #e0e0e0;
+        }
+
+        .empty-state h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+
+        .empty-state p {
+            font-size: 0.95rem;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            text-align: center;
+            padding: 25px 0;
+            margin-top: 40px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        /* Status Indicators */
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .online {
+            background-color: var(--success);
+            box-shadow: 0 0 10px var(--success);
+        }
+
+        /* Welcome Message */
+        .welcome-message {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+
+        .welcome-text h2 {
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .welcome-text p {
+            color: var(--secondary);
+        }
+
+        .driver-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #4bb543 0%, #3a9a32 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(75, 181, 67, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-school"></i>
+                <span>SmartRide School</span>
+            </div>
+            <div class="driver-info">
+                <div class="driver-avatar">{{ name[0] }}{{ name[1] if name|length>1 else '' }}</div>
+                <span>{{ name }}</span>
+                <button class="logout-btn" onclick="window.location.href='/logout'">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard container">
+        <!-- Welcome Message -->
+        <div class="welcome-message">
+            <div class="welcome-text">
+                <h2>Welcome back, {{ name }}!</h2>
+                <p>Ready to accept new ride requests and help students get to school safely.</p>
+            </div>
+            <div class="driver-status">
+                <span class="status-indicator online"></span>
+                Online
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Ride Requests Panel -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <i class="fas fa-bell"></i> Ride Requests
+                    </div>
+                    <div class="notification-container">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge" id="ride-count">0</span>
+                    </div>
+                </div>
+                <div class="panel-content" id="ride-requests">
+                    <!-- Ride cards will be populated by JS -->
+                    <div class="empty-state">
+                        <i class="fas fa-car-side"></i>
+                        <h3>No Ride Requests</h3>
+                        <p>New ride requests will appear here automatically</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Active/Completed Rides -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <i class="fas fa-history"></i> My Rides
+                    </div>
+                    <i class="fas fa-car"></i>
+                </div>
+                <div class="panel-content" id="my-rides">
+                    <!-- Accepted rides will appear here -->
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h3>No Active Rides</h3>
+                        <p>Accepted rides will appear here</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Smart Ride-Sharing System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Render ride request card
+            function renderRideRequest(ride) {
+                return `
+                <div class="ride-card fade-in" data-ride-id="${ride.id}">
+                    <div class="ride-card-header">
+                        <div class="ride-time"><i class="far fa-clock"></i> ${ride.pickup_time}</div>
+                        <div class="ride-students"><i class="fas fa-user-graduate"></i> ${ride.num_passengers} student${ride.num_passengers > 1 ? 's' : ''}</div>
+                    </div>
+                    <div class="ride-locations">
+                        <div class="location">
+                            <div class="location-icon pickup-icon"><i class="fas fa-map-marker-alt"></i></div>
+                            <div class="location-text"><strong>Pickup:</strong> ${ride.pickup}</div>
+                        </div>
+                        <div class="location">
+                            <div class="location-icon dropoff-icon"><i class="fas fa-flag-checkered"></i></div>
+                            <div class="location-text"><strong>Dropoff:</strong> ${ride.destination}</div>
+                        </div>
+                    </div>
+                    <div class="ride-actions">
+                        <button class="btn btn-primary accept-ride-btn" data-ride-id="${ride.id}">
+                            <i class="fas fa-check-circle"></i> Accept Ride
+                        </button>
+                    </div>
+                </div>`;
+            }
+
+            // Render ride card in My Rides panel
+            function renderMyRide(ride) {
+                return `
+                <div class="ride-card fade-in">
+                    <span class="ride-status status-active"><i class="fas fa-spinner fa-spin"></i> In Progress</span>
+                    <div class="ride-card-header">
+                        <div class="ride-time"><i class="far fa-clock"></i> ${ride.pickup_time}</div>
+                        <div class="ride-students"><i class="fas fa-user-graduate"></i> ${ride.num_passengers} student${ride.num_passengers > 1 ? 's' : ''}</div>
+                    </div>
+                    <div class="ride-locations">
+                        <div class="location">
+                            <div class="location-icon pickup-icon"><i class="fas fa-map-marker-alt"></i></div>
+                            <div class="location-text"><strong>Pickup:</strong> ${ride.pickup}</div>
+                        </div>
+                        <div class="location">
+                            <div class="location-icon dropoff-icon"><i class="fas fa-flag-checkered"></i></div>
+                            <div class="location-text"><strong>Dropoff:</strong> ${ride.destination}</div>
+                        </div>
+                    </div>
+                    <div class="ride-actions">
+                        <button class="btn btn-success complete-ride-btn" data-ride-id="${ride.id}">
+                            <i class="fas fa-flag-checkered"></i> Complete Ride
+                        </button>
+                    </div>
+                </div>`;
+            }
+
+            // Attach accept button events
+            function attachAcceptButtons() {
+                document.querySelectorAll('.accept-ride-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const rideId = btn.dataset.rideId;
+                        fetch('/accept_ride', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ ride_id: rideId })
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                // Move ride to My Rides panel
+                                const myRidesContainer = document.getElementById('my-rides');
+                                // Remove empty state if it exists
+                                if (myRidesContainer.querySelector('.empty-state')) {
+                                    myRidesContainer.innerHTML = '';
+                                }
+                                myRidesContainer.insertAdjacentHTML('afterbegin', renderMyRide(data.ride));
+                                // Remove from Ride Requests
+                                btn.closest('.ride-card').remove();
+                                updateRideCount();
+                                
+                                // Show success notification
+                                showNotification('Ride accepted successfully!', 'success');
+                            }
+                        });
+                    });
+                });
+            }
+
+            // Update ride count badge
+            function updateRideCount() {
+                const count = document.querySelectorAll('#ride-requests .ride-card').length;
+                document.getElementById('ride-count').textContent = count;
+                
+                // Update empty state visibility
+                const rideRequestsContainer = document.getElementById('ride-requests');
+                if (count === 0 && !rideRequestsContainer.querySelector('.empty-state')) {
+                    rideRequestsContainer.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-car-side"></i>
+                            <h3>No Ride Requests</h3>
+                            <p>New ride requests will appear here automatically</p>
+                        </div>`;
+                } else if (count > 0 && rideRequestsContainer.querySelector('.empty-state')) {
+                    rideRequestsContainer.querySelector('.empty-state').remove();
+                }
+            }
+
+            // Show notification
+            function showNotification(message, type) {
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.innerHTML = `
+                    <div class="notification-content">
+                        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                        <span>${message}</span>
+                    </div>
+                `;
+                
+                // Add styles for notification
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: ${type === 'success' ? 'linear-gradient(135deg, #4bb543, #3a9a32)' : 'linear-gradient(135deg, #dc3545, #c82333)'};
+                    color: white;
+                    padding: 15px 25px;
+                    border-radius: 10px;
+                    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+                    z-index: 1000;
+                    animation: slideInRight 0.5s ease-out;
+                    max-width: 350px;
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // Remove notification after 3 seconds
+                setTimeout(() => {
+                    notification.style.animation = 'fadeOut 0.5s ease-out';
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 500);
+                }, 3000);
+            }
+
+            // Fetch ride requests from server
+            async function fetchRideRequests() {
+                const res = await fetch('/new_rides');
+                const data = await res.json();
+                const container = document.getElementById('ride-requests');
+                
+                if (data.rides && data.rides.length > 0) {
+                    // Remove empty state if it exists
+                    if (container.querySelector('.empty-state')) {
+                        container.innerHTML = '';
+                    }
+                    
+                    data.rides.forEach(ride => {
+                        container.innerHTML += renderRideRequest(ride);
+                    });
+                    attachAcceptButtons();
+                } else if (!container.querySelector('.empty-state')) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-car-side"></i>
+                            <h3>No Ride Requests</h3>
+                            <p>New ride requests will appear here automatically</p>
+                        </div>`;
+                }
+                updateRideCount();
+            }
+
+            // Initial load and polling
+            fetchRideRequests();
+            setInterval(fetchRideRequests, 5000);
+
+            // Add fadeOut animation for notifications
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeOut {
+                    from { opacity: 1; transform: translateX(0); }
+                    to { opacity: 0; transform: translateX(100px); }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>

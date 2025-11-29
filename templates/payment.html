@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Ride-Sharing System | Payment</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --light: #f8fafc;
+            --white: #ffffff;
+            --gray: #e2e8f0;
+            --dark-gray: #94a3b8;
+            --text: #1e293b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .student-name {
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background-color: var(--light);
+            border: 1px solid var(--gray);
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background-color: var(--gray);
+        }
+
+        /* Main Content */
+        .payment-container {
+            padding: 30px 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .payment-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Card Styles */
+        .card {
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Order Summary */
+        .order-summary {
+            border-bottom: 1px solid var(--gray);
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .ride-details {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .ride-locations {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .location {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .location i {
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .location-name {
+            font-weight: 600;
+        }
+
+        .location-address {
+            font-size: 0.9rem;
+            color: var(--secondary);
+        }
+
+        .ride-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .ride-info-label {
+            color: var(--secondary);
+        }
+
+        .ride-info-value {
+            font-weight: 600;
+        }
+
+        .divider {
+            height: 1px;
+            background-color: var(--gray);
+            margin: 15px 0;
+        }
+
+        .price-breakdown {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .price-item {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .price-total {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--primary);
+            border-top: 1px solid var(--gray);
+            padding-top: 10px;
+        }
+
+        /* Payment Form */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--gray);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .card-input-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .card-input-group .form-group {
+            flex: 1;
+        }
+
+        .payment-methods {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .payment-method {
+            flex: 1;
+            border: 1px solid var(--gray);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-method:hover {
+            border-color: var(--primary);
+        }
+
+        .payment-method.selected {
+            border-color: var(--primary);
+            background-color: rgba(37, 99, 235, 0.05);
+        }
+
+        .payment-method i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .payment-method-name {
+            font-weight: 600;
+        }
+
+        .pay-btn {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 15px 20px;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .pay-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .pay-btn i {
+            margin-right: 10px;
+        }
+
+        /* Security Notice */
+        .security-notice {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: rgba(16, 185, 129, 0.1);
+            border-radius: 6px;
+            color: var(--success);
+        }
+
+        .security-notice i {
+            font-size: 1.2rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--white);
+            padding: 20px 0;
+            text-align: center;
+            color: var(--secondary);
+            margin-top: 30px;
+            border-top: 1px solid var(--gray);
+        }
+
+        /* Success Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            animation: modalAppear 0.3s ease;
+        }
+
+        @keyframes modalAppear {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: var(--success);
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .modal-message {
+            margin-bottom: 25px;
+            color: var(--secondary);
+        }
+
+        .modal-btn {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal-btn:hover {
+            background-color: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header/Navbar -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <i class="fas fa-bus"></i>
+                    <span>SmartRide</span>
+                </div>
+                <div class="user-info">
+                    <span class="student-name">Alex Johnson</span>
+                    <button class="logout-btn">Logout</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <div class="payment-container">
+            <!-- Left Column - Order Summary -->
+            <div class="left-column">
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-receipt"></i>
+                        Ride Summary
+                    </h2>
+                    <div class="order-summary">
+                        <div class="ride-details">
+                            <div class="ride-locations">
+                                <div class="location">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span class="location-name">{{ ride.pickup }}</span>
+                                   
+                                </div>
+                                <i class="fas fa-arrow-right" style="color: var(--primary);"></i>
+                                <div class="location">
+                                    <i class="fas fa-flag-checkered"></i>
+                                    <span class="location-name">{{ ride.destination }}</span>
+
+                                   
+                                </div>
+                            </div>
+                            
+                            <div class="ride-info">
+                               <span class="ride-info-value">{{ ride.pickup_time }}</span>
+
+                                
+                            </div>
+                            <div class="ride-info">
+                                <span class="ride-info-label">Passengers:</span>
+                                <span class="ride-info-value">{{ ride.num_passengers }} students</span>
+
+                            </div>
+                            <div class="ride-info">
+                                <span class="ride-info-label">Ride Duration:</span>
+                                <span class="ride-info-value">~15 minutes</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h2 class="card-title">
+                        <i class="fas fa-money-bill-wave"></i>
+                        Payment Summary
+                    </h2>
+                    <div class="price-breakdown">
+                        <div class="price-item">
+                            <span>Calculate Fare 50 * Passenger</span>
+<span>₹{{ ride.fare_total }}</span>
+                        </div>
+                        <div class="price-item">
+                            <span>Distance Charge </span>
+Pay ₹{{ ride.fare_total }}
+                        </div>
+                        <div class="price-item">
+                           
+                        </div>
+                        <div class="price-item">
+                       
+                        </div>
+                        <div class="divider"></div>
+                        <div class="price-item price-total">
+                            <span>Total Amount</span>
+<span> ₹{{ ride.fare_total }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-shield-alt"></i>
+                        Why Pay with SmartRide?
+                    </h2>
+                    <ul style="padding-left: 20px; margin-top: 15px;">
+                        <li style="margin-bottom: 10px;">Secure payment processing with encryption</li>
+                        <li style="margin-bottom: 10px;">No payment information stored on your device</li>
+                        <li style="margin-bottom: 10px;">Instant ride confirmation</li>
+                        <li style="margin-bottom: 10px;">Easy cancellation with full refund up to 1 hour before ride</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Right Column - Payment Form -->
+            <div class="right-column">
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-credit-card"></i>
+                        Payment Method
+                    </h2>
+                    
+                    <div class="payment-methods">
+                        <div class="payment-method selected" id="credit-card">
+                            <i class="far fa-credit-card"></i>
+                            <div class="payment-method-name">Credit Card</div>
+                        </div>
+                        <div class="payment-method" id="paypal">
+                            <i class="fab fa-cc-paypal"></i>
+                            <div class="payment-method-name">PayPal</div>
+                        </div>
+                        <div class="payment-method" id="apple-pay">
+                            <i class="fab fa-cc-apple-pay"></i>
+                            <div class="payment-method-name">Apple Pay</div>
+                        </div>
+                    </div>
+                    
+                    <form id="payment-form">
+                        <div class="form-group">
+                            <label for="card-number">Card Number</label>
+                            <input type="text" id="card-number" placeholder="1234 5678 9012 3456" required>
+                        </div>
+                        
+                        <div class="card-input-group">
+                            <div class="form-group">
+                                <label for="expiry-date">Expiry Date</label>
+                                <input type="text" id="expiry-date" placeholder="MM/YY" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="cvv">CVV</label>
+                                <input type="text" id="cvv" placeholder="123" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="cardholder-name">Cardholder Name</label>
+                            <input type="text" id="cardholder-name" placeholder="Your Name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="billing-zip">Billing ZIP Code</label>
+                            <input type="text" id="billing-zip" placeholder="12345" required>
+                        </div>
+                        
+                        <div class="security-notice">
+                            <i class="fas fa-lock"></i>
+                            <span>Your payment information is secure and encrypted</span>
+                        </div>
+                        
+                        <button type="submit" class="pay-btn">
+                            <i class="fas fa-lock"></i>
+<span> ₹{{ ride.fare_total }}</span>
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-question-circle"></i>
+                        Need Help?
+                    </h2>
+                    <p style="margin-bottom: 15px;">If you're experiencing issues with payment, contact our support team:</p>
+                    <div style="display: flex; gap: 15px;">
+                        <div style="flex: 1; text-align: center;">
+                            <i class="fas fa-phone" style="color: var(--primary); margin-bottom: 5px;"></i>
+                            <div style="font-weight: 600;">Call Us</div>
+                            <div style="font-size: 0.9rem; color: var(--secondary);">1234 123-4567</div>
+                        </div>
+                        <div style="flex: 1; text-align: center;">
+                            <i class="fas fa-envelope" style="color: var(--primary); margin-bottom: 5px;"></i>
+                            <div style="font-weight: 600;">Email Us</div>
+                            <div style="font-size: 0.9rem; color: var(--secondary);">support@smartride.edu</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Success Modal -->
+    <div class="modal" id="success-modal">
+        <div class="modal-content">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2 class="modal-title">Payment Successful!</h2>
+            <p class="modal-message">Your ride has been confirmed. A receipt has been sent to your email.</p>
+            <button class="modal-btn" id="return-to-dashboard">Return to Dashboard</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Smart Ride-Sharing System. All rights reserved.</p>
+        </div>
+    </footer>
+
+<script>
+    // ---------------- Payment Method Selection ----------------
+    const paymentMethods = document.querySelectorAll('.payment-method');
+    
+    paymentMethods.forEach(method => {
+        method.addEventListener('click', () => {
+            paymentMethods.forEach(m => m.classList.remove('selected'));
+            method.classList.add('selected');
+        });
+    });
+
+    // ---------------- Elements ----------------
+    const paymentForm = document.getElementById('payment-form');
+    const successModal = document.getElementById('success-modal');
+    const returnBtn = document.getElementById('return-to-dashboard');
+
+    // ---------------- Payment Form Submit ----------------
+    paymentForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const cardNumber = document.getElementById('card-number').value;
+        const expiryDate = document.getElementById('expiry-date').value;
+        const cvv = document.getElementById('cvv').value;
+        const cardholderName = document.getElementById('cardholder-name').value;
+        const billingZip = document.getElementById('billing-zip').value;
+
+        // Validation
+        if (!cardNumber || !expiryDate || !cvv || !cardholderName || !billingZip) {
+            alert("Please fill in all payment details");
+            return;
+        }
+
+        // ---------------- Send Payment Confirmation to Backend ----------------
+        try {
+            const res = await fetch("/payment/confirm", {
+                method: "POST",
+                headers: { 
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    ride_id: {{ ride.id }}   // <--- Jinja inserts correct ride ID
+                })
+            });
+
+            const data = await res.json();
+
+            if (data.status === "success") {
+                successModal.style.display = "flex";
+            } else {
+                alert("Payment failed. Try again.");
+            }
+        } catch (error) {
+            console.error("Payment Error:", error);
+            alert("Server error. Please try again.");
+        }
+    });
+
+    // ---------------- Dashboard Return ----------------
+    returnBtn.addEventListener('click', () => {
+        window.location.href = "/student";
+    });
+
+    // ---------------- Close Modal If Click Outside ----------------
+    window.addEventListener('click', (e) => {
+        if (e.target === successModal) {
+            successModal.style.display = 'none';
+        }
+    });
+
+    // ---------------- Format Card Number Input ----------------
+    const cardNumberInput = document.getElementById('card-number');
+    cardNumberInput.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        let formattedValue = '';
+        
+        for (let i = 0; i < value.length; i++) {
+            if (i > 0 && i % 4 === 0) {
+                formattedValue += ' ';
+            }
+            formattedValue += value[i];
+        }
+        
+        e.target.value = formattedValue;
+    });
+
+    // ---------------- Format Expiry Date Input ----------------
+    const expiryDateInput = document.getElementById('expiry-date');
+    expiryDateInput.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        
+        if (value.length >= 2) {
+            e.target.value = value.substring(0, 2) + '/' + value.substring(2, 4);
+        } else {
+            e.target.value = value;
+        }
+    });
+</script>
+
+</body>
+</html>
